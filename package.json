@@ -1,5 +1,4 @@
 {
-  "homepage": "https://esokite3.github.io.caitlynlee",
   "name": "caitlynlee",
   "private": true,
   "version": "0.0.0",
@@ -8,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "jspdf": "^3.0.3",
