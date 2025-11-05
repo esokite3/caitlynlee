@@ -52,6 +52,9 @@ body {
    3. Login Screen & Elements
    ==================================== */
 .login-screen {
+  background-image: url('./assets/wallpaper.jpg');
+  background-size: cover;
+  background-position: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -145,6 +148,9 @@ body {
    4. Desktop Icons & Folders
    ==================================== */
 .desktop {
+  background-image: url('./assets/wallpaper.jpg');
+  background-size: cover;
+  background-position: center;
   opacity: 0;
   display: flex;
   flex-wrap: wrap;

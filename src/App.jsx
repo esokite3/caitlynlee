@@ -9,11 +9,9 @@ import githubIcon from './assets/github.png';
 import linkedinIcon from './assets/linkedin.png';
 import mailIcon from './assets/mail-icon.png';
 import messageIcon from './assets/message.png';
-import noiseBackground from './assets/noise.png';
 import pdfIcon from './assets/pdf-icon.png';
 import resume from './assets/Resume-CaitlynLee.jpg';
 import textIcon from './assets/text-icon.png';
-import wallpaper from './assets/wallpaper.jpg';
 
 export default function App() {
   // Login & Desktop states
@@ -76,7 +74,6 @@ export default function App() {
     const state = openWindows[id] || {};
     if (!state.visible) return null;
 
-    // Build props conditionally
     const rndProps = {
       default: { x: 100, y: 100, width: 400, height: 300 },
       minWidth: 300,
@@ -84,7 +81,6 @@ export default function App() {
       bounds: 'window',
     };
 
-    // Only add size/position for minimized or maximized states
     if (state.minimized) {
       rndProps.size = { width: 200, height: 40 };
       rndProps.enableResizing = false;
@@ -123,11 +119,10 @@ export default function App() {
   if (!loggedIn) {
     return (
       <div
-      ref={loginRef}
+        ref={loginRef}
         className={`login-screen ${loggingIn ? 'fade-out' : ''}`}
         tabIndex={0}
         onKeyDown={handleLoginKey}
-        style={{ backgroundImage: `url(${wallpaper})` }}
       >
         <div className="login-box">
           <img src={profilePic} alt="Profile" className="profile-pic" />
@@ -141,22 +136,24 @@ export default function App() {
     );
   }
 
-  // DESKTOP & WINDOWS
+  // DESKTOP & WINDOWS (NO NOISE)
   return (
-    <div className="noise-container" style={{ backgroundImage: `url(${noiseBackground})` }}>
+    <>
       {/* Intro message */}
       <div className="fake-text-message">
         <div className="bubble">
           <img src={messageIcon} alt="Text message" className="message-icon" />
           <div className="text-content">
             <div className="text-name"><strong>Caitlyn</strong></div>
-            <div className="text-body">Hey! Thanks for visiting my website. It's still a work in progress 😄</div>
+            <div className="text-body">
+              Hey! Thanks for visiting my website. It's still a work in progress 😄
+            </div>
           </div>
         </div>
       </div>
 
       {/* Desktop */}
-      <div className={`desktop ${loggedIn ? 'show' : ''}`} style={{ backgroundImage: `url(${wallpaper})` }}>
+      <div className={`desktop ${loggedIn ? 'show' : ''}`}>
         <div className="folder" onClick={() => toggleWindow('home', 'open')}>
           <img src={folderIcon} alt="Home" className="folder-icon" />
           <div className="folder-name">Home</div>
@@ -224,34 +221,32 @@ Last modified: Tue Nov 4 13:43:58
         <p> <strong>EXPERIENCE</strong><br /><br /> 
         <strong>Current</strong><br /> 
         01 <em>Undergraduate Research Assistant @ UCSD</em><br /> 
-        • Lead a team of students on an image annotation project of 1000+ images of avocado trees using Label Studio.<br />
-        • Prepare datasets for future machine learning model development by organizing image files and metadata.<br />
+        • Lead a team of students on an image annotation project of 1000+ images of avocado trees using Label Studio.<br /> 
+        • Prepare datasets for future machine learning model development by organizing image files and metadata.<br /> 
         • Begin development of machine learning models for phenotype classification and object detection, leveraging Python, TensorFlow, and PyTorch <br /><br /> 
         02 <em>PR/Marketing @ EDGE</em><br /> 
-        • Lead marketing and public relations efforts for EDGE, a mentorship program jointly run by Women in Computing (WIC) and the Society of Women Engineers (SWE) at UCSD.<br />
-        • Develop and manage social media campaigns, newsletters, and event promotions to boost visibility and engagement.<br />
-        • Create digital and print materials (flyers, graphics, recaps) that highlight EDGE’s mission to empower young women in STEM.<br />
+        • Lead marketing and public relations efforts for EDGE, a mentorship program jointly run by Women in Computing (WIC) and the Society of Women Engineers (SWE) at UCSD.<br /> 
+        • Develop and manage social media campaigns, newsletters, and event promotions to boost visibility and engagement.<br /> 
+        • Create digital and print materials (flyers, graphics, recaps) that highlight EDGE’s mission to empower young women in STEM.<br /> 
         • Collaborate with event and outreach teams to ensure consistent branding and effective communication across all channels. <br /><br /> 
-        03 <em>Sports Marketing @ KSDT Sports</em><br /> Marketing sporting events, creating graphics, and managing social media accounts.<br /><br /> 
+        03 <em>Sports Marketing @ KSDT Sports</em><br /> Marketing sporting events, creating graphics, and managing social media accounts.<br /><br />
         <strong>Previous</strong><br /> 
         01 <em>Software Engineering Program Participant @ BASTA x Google</em><br /> 
-        • Selected as one of 219 students from 2,600+ applicants for a 10 week SWE mentorship with a Google Software Engineer.<br />
-        • Solve LeetCode-style algorithmic problems weekly, applying optimization strategies and debugging techniques.<br />
+        • Selected as one of 219 students from 2,600+ applicants for a 10 week SWE mentorship with a Google Software Engineer.<br /> 
+        • Solve LeetCode-style algorithmic problems weekly, applying optimization strategies and debugging techniques.<br /> 
         • Participate in mock interviews and receive code review feedback to strengthen software engineering skills. <br /><br /> 
-        02 <em>Summer Immersion Program @ Girls Who Code</em><br /> 
-        • Learned web development and built a portfolio using HTML, CSS, and JavaScript.<br /><br /> 
-        <strong>PROJECTS</strong><br /><br /> 
-        01 <em>Educational Web Game</em><br /> 
-        • Collaborating in a team of 6 to design and develop an online educational game for 3rd-4th grade students with a tech stack of Typescript and Konva.<br />
-        • Applying Agile principles including sprint planning, task tracking, and iterative feedback to guide development.<br />
+        02 <em>Summer Immersion Program @ Girls Who Code</em><br /> • Learned web development and built a portfolio using HTML, CSS, and JavaScript.<br /><br /> 
+        <strong>PROJECTS</strong><br /><br /> 01 <em>Educational Web Game</em><br /> 
+        • Collaborating in a team of 6 to design and develop an online educational game for 3rd-4th grade students with a tech stack of Typescript and Konva.<br /> 
+        • Applying Agile principles including sprint planning, task tracking, and iterative feedback to guide development.<br /> 
         • Leading early-stage design discussions and contributing to requirements analysis, UI/UX wireframes in Figma, and feature planning.<br /><br /> 
         02 <em>Clippers Stats Tracker</em><br /> 
-        • Developing a full-stack web application using React (frontend) and Spring Boot (backend) with AWS DynamoDB backend to track LA Clippers player profiles, career averages, and last 5 games performance statistics.<br />
-        • Deployed backend REST API on Heroku and frontend on Vercel with continuous integration via GitHub, implementing environment-specific configurations for seamless production deployment.<br />
+        • Developing a full-stack web application using React (frontend) and Spring Boot (backend) with AWS DynamoDB backend to track LA Clippers player profiles, career averages, and last 5 games performance statistics.<br /> 
+        • Deployed backend REST API on Heroku and frontend on Vercel with continuous integration via GitHub, implementing environment-specific configurations for seamless production deployment.<br /> 
         • Integrated AWS SDK for Java to query DynamoDB tables and serve JSON responses for dynamic frontend rendering.<br /><br /> 
         03 <em>Bikeshare Data Analysis</em><br /> 
-        • Analyzed ~1M bike share records using Python (pandas, NumPy, Scikit-learn) to study correlation between ridership and daylight patterns.<br />
-        • Conducted EDA and regression modeling (OLS) to analyze ridership trends, finding membership type as the strongest predictor of trip duration.<br />
+        • Analyzed ~1M bike share records using Python (pandas, NumPy, Scikit-learn) to study correlation between ridership and daylight patterns.<br /> 
+        • Conducted EDA and regression modeling (OLS) to analyze ridership trends, finding membership type as the strongest predictor of trip duration.<br /> 
         • Collaborated in a team of 5 via Git/GitHub, debugging scripts and ensuring reproducibility across environments.<br /><br /> 
         <span className="resume-link" onClick={() => toggleWindow('resume', 'open')}>Check out my resume for more details!</span> </p>
       </Window>
@@ -272,6 +267,6 @@ Last modified: Tue Nov 4 13:43:58
           </a>
         </div>
       </Window>
-    </div>
+    </>
   );
 }
