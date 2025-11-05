@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Rnd } from 'react-rnd';
 import { jsPDF } from 'jspdf';
 import './index.css';
 
-import profilePic from './assets/CaitlynLee-Headshot.jpg'
+import profilePic from './assets/CaitlynLee-Headshot.jpg';
 import folderIcon from './assets/folder-icon.png';
 import githubIcon from './assets/github.png';
 import linkedinIcon from './assets/linkedin.png';
 import mailIcon from './assets/mail-icon.png';
-import memojiIcon from './assets/memoji.ico';
 import messageIcon from './assets/message.png';
 import noiseBackground from './assets/noise.png';
 import pdfIcon from './assets/pdf-icon.png';
@@ -17,19 +16,31 @@ import textIcon from './assets/text-icon.png';
 import wallpaper from './assets/wallpaper.jpg';
 
 export default function App() {
+  // Login & Desktop states
   const [loggedIn, setLoggedIn] = useState(false);
+  const [loggingIn, setLoggingIn] = useState(false);
+
+  // Window management
   const [openWindows, setOpenWindows] = useState({});
   const [zoom, setZoom] = useState(1);
 
+  const loginRef = useRef(null);
+
+  useEffect(() => {
+    if (!loggedIn && loginRef.current) {
+      loginRef.current.focus();
+    }
+  }, [loggedIn]);
+
+  // Handle login key press
   const handleLoginKey = (e) => {
     if (e.key === 'Enter') {
-      setLoggedIn(true);
+      setLoggingIn(true); // start fade-out animation
+      setTimeout(() => setLoggedIn(true), 1000); // show desktop after animation
     }
+  };
 
-    // Delay showing desktop to let animation play
-    setTimeout(() => setLoggedIn(true), 1000);
-  }
-
+  // Toggle window visibility
   const toggleWindow = (id, action) => {
     setOpenWindows(prev => {
       const current = prev[id] || { visible: false, minimized: false, maximized: false };
@@ -41,6 +52,7 @@ export default function App() {
     });
   };
 
+  // PDF download & print
   const downloadPDF = () => {
     const pdf = new jsPDF();
     const img = document.getElementById('resume-image');
@@ -55,20 +67,42 @@ export default function App() {
     printWindow.print();
   };
 
+  // Zoom controls
   const zoomIn = () => setZoom(prev => Math.min(prev + 0.25, 2));
   const zoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
 
+  // Window component
   const Window = ({ id, title, children }) => {
     const state = openWindows[id] || {};
     if (!state.visible) return null;
 
-    const minimizedStyle = state.minimized ? { height: '40px', width: '200px' } : {};
-    const maximizedStyle = state.maximized ? { top: 0, left: 0, width: '100vw', height: '100vh' } : {};
+    // Build props conditionally
+    const rndProps = {
+      default: { x: 100, y: 100, width: 400, height: 300 },
+      minWidth: 300,
+      minHeight: 200,
+      bounds: 'window',
+    };
+
+    // Only add size/position for minimized or maximized states
+    if (state.minimized) {
+      rndProps.size = { width: 200, height: 40 };
+      rndProps.enableResizing = false;
+    } else if (state.maximized) {
+      rndProps.size = { width: window.innerWidth - 100, height: window.innerHeight - 100 };
+      rndProps.position = { x: 50, y: 50 };
+      rndProps.enableResizing = false;
+      rndProps.disableDragging = true;
+    }
 
     return (
-      <Rnd default={{ x: 100, y: 100, width: 400, height: 300 }} minWidth={300} minHeight={200} style={{ zIndex: 9999 }}>
-        <div className={`window show ${state.maximized ? 'maximized' : ''} ${state.minimized ? 'minimized' : ''}`} style={{ ...minimizedStyle, ...maximizedStyle }}>
-          <div className="window-header">
+      <Rnd 
+        {...rndProps}
+        style={{ zIndex: 9999 }}
+        dragHandleClassName="window-header"
+      >
+        <div className="window show" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', pointerEvents: 'auto' }}>
+          <div className="window-header" style={{ cursor: 'move' }}>
             <div className="window-controls">
               <div className="window-control close" onClick={() => toggleWindow(id, 'close')}></div>
               <div className="window-control minimize" onClick={() => toggleWindow(id, 'minimize')}></div>
@@ -77,18 +111,23 @@ export default function App() {
             <div className="window-title">{title}</div>
             <div className="window-spacer"></div>
           </div>
-          <div className="window-content">{children}</div>
+          <div className="window-content" style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
+            {children}
+          </div>
         </div>
       </Rnd>
     );
   };
 
+  // LOGIN SCREEN
   if (!loggedIn) {
     return (
       <div
+      ref={loginRef}
         className={`login-screen ${loggingIn ? 'fade-out' : ''}`}
         tabIndex={0}
         onKeyDown={handleLoginKey}
+        style={{ backgroundImage: `url(${wallpaper})` }}
       >
         <div className="login-box">
           <img src={profilePic} alt="Profile" className="profile-pic" />
@@ -102,6 +141,7 @@ export default function App() {
     );
   }
 
+  // DESKTOP & WINDOWS
   return (
     <div className="noise-container" style={{ backgroundImage: `url(${noiseBackground})` }}>
       {/* Intro message */}
@@ -131,7 +171,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Home Window */}
+      {/* Windows */}
       <Window id="home" title="Home">
         <div className="file" onClick={() => toggleWindow('about', 'open')}>
           <img src={textIcon} className="file-icon" alt="Text file" />
@@ -139,7 +179,6 @@ export default function App() {
         </div>
       </Window>
 
-      {/* About Me */}
       <Window id="about" title="about_me.txt">
         <pre>
 Hello! I'm Caitlyn 👋
@@ -155,7 +194,6 @@ Last modified: Tue Nov 4 13:43:58
         </pre>
       </Window>
 
-      {/* Experience */}
       <Window id="experience" title="Experience & Projects">
         <div className="file" onClick={() => toggleWindow('experienceTxt', 'open')}>
           <img src={textIcon} className="file-icon" alt="Text file" />
@@ -167,7 +205,6 @@ Last modified: Tue Nov 4 13:43:58
         </div>
       </Window>
 
-      {/* Resume */}
       <Window id="resume" title="resume.jpg">
         <div className="image-toolbar">
           <button className="toolbar-btn" onClick={downloadPDF}>Download</button>
@@ -183,50 +220,42 @@ Last modified: Tue Nov 4 13:43:58
         </div>
       </Window>
 
-      {/* Experience text */}
       <Window id="experienceTxt" title="experience_projects.txt">
-        <p>
-          <strong>EXPERIENCE</strong><br /><br />
-          <strong>Current</strong><br />
-          01  <em>Undergraduate Research Assistant @ UCSD</em><br />
-          • Lead a team of students on an image annotation project of 1000+ images of avocado trees using Label Studio.
-          • Prepare datasets for future machine learning model development by organizing image files and metadata.
-          • Begin development of machine learning models for phenotype classification and object detection, leveraging Python, TensorFlow, and PyTorch
-          <br /><br />
-          02  <em>PR/Marketing @ EDGE</em><br />
-          • Lead marketing and public relations efforts for EDGE, a mentorship program jointly run by Women in Computing (WiC) and the Society of Women Engineers (SWE) at UCSD.
-          • Develop and manage social media campaigns, newsletters, and event promotions to boost visibility and engagement.
-          • Create digital and print materials (flyers, graphics, recaps) that highlight EDGE’s mission to empower young women in STEM.
-          • Collaborate with event and outreach teams to ensure consistent branding and effective communication across all channels.
-          <br /><br />
-          03  <em>Sports Marketing @ KSDT Sports</em><br />
-          Marketing sporting events, creating graphics, and managing social media accounts.<br /><br />
-          <strong>Previous</strong><br />
-          01  <em>Software Engineering Program Participant @ BASTA x Google</em><br />
-          • Selected as one of 219 students from 2,600+ applicants for a 10 week SWE mentorship with a Google Software Engineer.
-          • Solve LeetCode-style algorithmic problems weekly, applying optimization strategies and debugging techniques.
-          • Participate in mock interviews and receive code review feedback to strengthen software engineering skills.
-          <br /><br />
-          02  <em>Summer Immersion Program @ Girls Who Code</em><br />
-          Learned web development and built a portfolio using HTML, CSS, and JavaScript.<br /><br />
-          <strong>PROJECTS</strong><br /><br />
-          01  <em>Educational Web Game</em><br />
-          • Collaborating in a team of 6 to design and develop an online educational game for 3rd-4th grade students with an anticipated tech stack of Typescript.
-          • Applying Agile principles including sprint planning, task tracking, and iterative feedback to guide development.
-          • Leading early-stage design discussions and contributing to requirements analysis, UI/UX wireframes in Figma, and feature planning.<br /><br />
-          01  <em>Bikeshare Data Analysis</em><br />
-          • Developing a full-stack web application using React (frontend) and Spring Boot (backend) with AWS DynamoDB backend to track LA Clippers player profiles, career averages, and last 5 games performance statistics.
-          • Deployed backend REST API on Heroku and frontend on Vercel with continuous integration via GitHub, implementing environment-specific configurations for seamless production deployment.
-          • Integrated AWS SDK for Java to query DynamoDB tables and serve JSON responses for dynamic frontend rendering.<br /><br />
-          01  <em>Bikeshare Data Analysis</em><br />
-          • Analyzed ~1M bike share records using Python (pandas, NumPy, Scikit-learn) to study correlation between ridership and daylight patterns.
-          • Conducted EDA and regression modeling (OLS) to analyze ridership trends, finding membership type as the strongest predictor of trip duration.
-          • Collaborated in a team of 5 via Git/GitHub, debugging scripts and ensuring reproducibility across environments.<br /><br />
-          <span className="resume-link" onClick={() => toggleWindow('resume', 'open')}>Check out my resume for more details!</span>
-        </p>
+        <p> <strong>EXPERIENCE</strong><br /><br /> 
+        <strong>Current</strong><br /> 
+        01 <em>Undergraduate Research Assistant @ UCSD</em><br /> 
+        • Lead a team of students on an image annotation project of 1000+ images of avocado trees using Label Studio.<br />
+        • Prepare datasets for future machine learning model development by organizing image files and metadata.<br />
+        • Begin development of machine learning models for phenotype classification and object detection, leveraging Python, TensorFlow, and PyTorch <br /><br /> 
+        02 <em>PR/Marketing @ EDGE</em><br /> 
+        • Lead marketing and public relations efforts for EDGE, a mentorship program jointly run by Women in Computing (WIC) and the Society of Women Engineers (SWE) at UCSD.<br />
+        • Develop and manage social media campaigns, newsletters, and event promotions to boost visibility and engagement.<br />
+        • Create digital and print materials (flyers, graphics, recaps) that highlight EDGE’s mission to empower young women in STEM.<br />
+        • Collaborate with event and outreach teams to ensure consistent branding and effective communication across all channels. <br /><br /> 
+        03 <em>Sports Marketing @ KSDT Sports</em><br /> Marketing sporting events, creating graphics, and managing social media accounts.<br /><br /> 
+        <strong>Previous</strong><br /> 
+        01 <em>Software Engineering Program Participant @ BASTA x Google</em><br /> 
+        • Selected as one of 219 students from 2,600+ applicants for a 10 week SWE mentorship with a Google Software Engineer.<br />
+        • Solve LeetCode-style algorithmic problems weekly, applying optimization strategies and debugging techniques.<br />
+        • Participate in mock interviews and receive code review feedback to strengthen software engineering skills. <br /><br /> 
+        02 <em>Summer Immersion Program @ Girls Who Code</em><br /> 
+        • Learned web development and built a portfolio using HTML, CSS, and JavaScript.<br /><br /> 
+        <strong>PROJECTS</strong><br /><br /> 
+        01 <em>Educational Web Game</em><br /> 
+        • Collaborating in a team of 6 to design and develop an online educational game for 3rd-4th grade students with a tech stack of Typescript and Konva.<br />
+        • Applying Agile principles including sprint planning, task tracking, and iterative feedback to guide development.<br />
+        • Leading early-stage design discussions and contributing to requirements analysis, UI/UX wireframes in Figma, and feature planning.<br /><br /> 
+        02 <em>Clippers Stats Tracker</em><br /> 
+        • Developing a full-stack web application using React (frontend) and Spring Boot (backend) with AWS DynamoDB backend to track LA Clippers player profiles, career averages, and last 5 games performance statistics.<br />
+        • Deployed backend REST API on Heroku and frontend on Vercel with continuous integration via GitHub, implementing environment-specific configurations for seamless production deployment.<br />
+        • Integrated AWS SDK for Java to query DynamoDB tables and serve JSON responses for dynamic frontend rendering.<br /><br /> 
+        03 <em>Bikeshare Data Analysis</em><br /> 
+        • Analyzed ~1M bike share records using Python (pandas, NumPy, Scikit-learn) to study correlation between ridership and daylight patterns.<br />
+        • Conducted EDA and regression modeling (OLS) to analyze ridership trends, finding membership type as the strongest predictor of trip duration.<br />
+        • Collaborated in a team of 5 via Git/GitHub, debugging scripts and ensuring reproducibility across environments.<br /><br /> 
+        <span className="resume-link" onClick={() => toggleWindow('resume', 'open')}>Check out my resume for more details!</span> </p>
       </Window>
 
-      {/* Socials */}
       <Window id="socials" title="Socials">
         <div className="socials-content">
           <a href="https://www.linkedin.com/in/caitlyn-lee3" target="_blank">
