@@ -1,16 +1,48 @@
-# React + Vite
+# Caitlyn Lee — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sticky-note desk portfolio: experience and projects presented as interactive
+sticky notes on a paper workspace. Built to feel handcrafted and tactile while
+staying professional.
 
-Currently, two official plugins are available:
+**Live:** https://esokite3.github.io/caitlynlee/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech stack
 
-## React Compiler
+- **React 19** + **TypeScript** + **Vite**
+- **Tailwind CSS** (design tokens as CSS variables)
+- **Framer Motion** (peel, morph, page transitions)
+- **React Router**
+- **Lucide** (monochrome navigation icons)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting started
 
-## Expanding the ESLint configuration
+```bash
+npm install
+npm run dev      # http://localhost:5173/caitlynlee/
+npm run build    # type-check + production build
+npm run preview  # preview the production build
+npm run deploy   # build + publish dist/ to GitHub Pages
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Architecture
+
+All content lives in `src/data/*` — experiences, projects, skills, socials,
+navigation, and About copy. UI components render from that data, so adding a new
+experience, project, or link is a one-line data change, never a component edit.
+
+```
+src/
+  components/   Navbar, PeelNote, StickyGrid, StickyModal, Polaroid, …
+  hooks/        useModal, useScrollLock, useFocusTrap, useReducedMotion
+  data/         experiences, projects, skills, socials, navigation, about
+  pages/        Home, Work, About
+  lib/motion.ts Shared easing / durations / variants
+```
+
+## Notes
+
+- Deployed under the `/caitlynlee/` base path; `vite.config.ts` `base` and the
+  router `basename` must stay in sync. `public/404.html` provides the SPA
+  fallback so deep links survive a refresh on GitHub Pages.
+- Accessibility: keyboard-operable notes and modal (focus trap + Escape),
+  semantic landmarks, ARIA labels, and reduced-motion support.

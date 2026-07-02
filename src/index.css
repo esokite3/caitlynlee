@@ -1,451 +1,83 @@
-/* ====================================
-   1. Base & Global Reset
-   ==================================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Colors as space-separated RGB channels so Tailwind alpha modifiers
+     (text-ink/70, bg-paper/80, …) resolve correctly. */
+  --color-primary: 11 75 175; /* #0B4BAF */
+  --color-primary-dark: 8 58 138; /* #083A8A */
+  --color-ink: 43 43 43; /* #2B2B2B */
+  --color-paper: 255 255 255; /* #FFFFFF */
+  --color-sticky: 251 232 143; /* #FBE88F */
+  --color-sticky-edge: 244 217 92; /* #F4D95C */
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  --font-hand: 'Caveat', 'Segoe Script', cursive;
+  /* Decorative note fonts. Files live in /public/fonts and load once present;
+     until then these gracefully fall back to the base hand font. */
+  --font-shabby: 'Another Shabby', var(--font-hand);
+  --font-biro: 'Biro Script Plus', var(--font-hand);
 }
 
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
+/* Drop a matching file in public/fonts to activate (woff2 preferred). */
+@font-face {
+  font-family: 'Another Shabby';
+  src:
+    url('/caitlynlee/fonts/another-shabby.woff2') format('woff2'),
+    url('/caitlynlee/fonts/another-shabby.woff') format('woff'),
+    url('/caitlynlee/fonts/another-shabby.ttf') format('truetype'),
+    url('/caitlynlee/fonts/another-shabby.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
-body {
-  /* Mac-like system font stack */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #ffffff;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden; /* Prevents body scroll */
-  user-select: none;
+@font-face {
+  font-family: 'Biro Script Plus';
+  src:
+    url('/caitlynlee/fonts/biro-script.woff2') format('woff2'),
+    url('/caitlynlee/fonts/biro-script.woff') format('woff'),
+    url('/caitlynlee/fonts/biro-script.otf') format('opentype'),
+    url('/caitlynlee/fonts/biro-script.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
-/* ====================================
-   2. Desktop Background & Noise
-   ==================================== */
-.noise-container {
-  position: relative;
-  /* Use the background image (wallpaper) set in React, but define fallback gradient */
-  background: linear-gradient(834deg, rgba(255, 255, 255, 1) 0%, rgba(247, 205, 205, 1) 54%, rgba(252, 237, 189, 1) 100%);
-  height: 100vh;
-  overflow: hidden;
-}
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
 
-.noise-container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url('./assets/noise.png'); /* The noise pattern */
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.3;
-  filter: brightness(0.8);
-  pointer-events: none; /* Allows clicks to pass through */
-}
-
-/* ====================================
-   3. Login Screen & Elements
-   ==================================== */
-.login-screen {
-  background-image: url('./assets/wallpaper.jpg');
-  background-size: cover;
-  background-position: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
-  color: white;
-  cursor: default;
-  z-index: 10000;
-  overflow: hidden;
-  transition: opacity 1s ease, transform 1s ease;
-}
-
-.login-screen.fade-out {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-/* Background blur and overlay */
-.login-screen::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(10px);
-  background-color: rgba(0,0,0,0.3);
-  z-index: 1;
-}
-
-.login-box {
-  position: relative;
-  z-index: 2;
-  width: 300px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2rem 1.5rem;
-  border-radius: 20px;
-  backdrop-filter: blur(20px); /* Frosted glass effect */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 1s ease, opacity 1s ease;
-}
-
-.profile-pic {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-  border: 2px solid rgba(255,255,255,0.6);
-  object-fit: cover;
-}
-
-.login-box h2 {
-  margin-bottom: 2rem;
-  font-weight: 500;
-  font-size: 1.2rem;
-}
-
-.login-input {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255,255,255,0.2);
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-  cursor: default;
-  font-size: 0.95rem;
-  color: white;
-  border: 1px solid rgba(255,255,255,0.3);
-  transition: background 0.2s ease;
-}
-
-.login-input:hover {
-  background: rgba(255,255,255,0.3);
-}
-
-.arrow {
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-/* ====================================
-   4. Desktop Icons & Folders
-   ==================================== */
-.desktop {
-  background-image: url('./assets/wallpaper.jpg');
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* Center horizontally */
-  align-items: center;     /* Center vertically */
-  gap: 80px 40px;          /* Vertical | Horizontal gap */
-  padding: 40px;
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  transition: opacity 1s ease;
-}
-
-.desktop.show {
-  opacity: 1;
-}
-
-.folder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 15px;
-  border-radius: 8px;
-  min-width: 100px;
-  text-decoration: none; /* Ensure no underline if you switch to <a> */
-}
-
-.folder:hover {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transform: translateY(-2px);
-}
-
-.folder-icon {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.folder-name {
-  color: white;
-  font-size: 13px;
-  font-weight: 500;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  max-width: 100px;
-  word-wrap: break-word;
-  line-height: 1.2;
-  min-height: 2.4em;
-}
-
-/* ====================================
-   5. Notification (Fake Text Message)
-   ==================================== */
-.fake-text-message {
-  position: fixed;
-  top: 20px;
-  right: -400px;
-  z-index: 9999;
-  animation: slideInOut 5s ease forwards;
-}
-
-.fake-text-message .bubble {
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  max-width: 350px;
-  min-width: 300px;
-  font-size: 14px;
-  color: #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.message-icon {
-  width: 45px;
-  height: 45px;
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-
-.text-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.text-name {
-  font-size: 12px;
-  padding-bottom: 2px;
-  font-weight: 600;
-}
-
-.text-body {
-  font-size: 12px;
-  line-height: 1.3;
-  word-wrap: break-word;
-}
-
-@keyframes slideInOut {
-  0% { right: -400px; opacity: 0; }
-  10% { right: 20px; opacity: 1; }
-  85% { right: 20px; opacity: 1; }
-  100% { right: -400px; opacity: 0; }
-}
-
-/* ====================================
-   6. Window Base Styles
-   ==================================== */
-.window, .content-textedit-window, .floating-window {
-  position: absolute;
-  left: 100px;
-  top: 100px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  display: none;
-  min-width: 400px;
-  min-height: 300px;
-  /* cursor: move; <- Rnd component handles dragging, remove from here */
-  z-index: 1000;
-  overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
-}
-
-.window.show, .content-textedit-window.show, .floating-window.show {
-  display: block;
-  opacity: 1;
-  visibility: visible;
-  /* animation: windowOpen 0.2s ease-out; */ /* Removed custom animation keyframe */
-}
-
-.window.maximized { border-radius: 0; transition: all 0.3s ease; }
-.window.minimized { height: 40px !important; width: 200px !important; transition: all 0.2s ease; }
-
-.window-header {
-  background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
-  border-bottom: 1px solid #d0d0d0;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  cursor: grab; /* Set grab cursor for Rnd drag handle */
-}
-
-.window-controls { display: flex; gap: 8px; margin-right: 10px; }
-
-.window-control {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
-  flex-shrink: 0; /* Prevent controls from shrinking */
-}
-
-.window-control.close { background: #ff5f57; border: 1px solid #e04640; }
-.window-control.minimize { background: #ffbd2e; border: 1px solid #dea123; }
-.window-control.maximize { background: #28ca42; border: 1px solid #1dad2b; }
-
-.window-control:hover { filter: brightness(1.1); }
-
-/* Symbols on hover */
-.window-control.close:hover::after { content: '×'; font-size: 8px; color: #8b0000; font-weight: bold; position: absolute; top:50%; left:50%; transform: translate(-50%,-50%); }
-.window-control.minimize:hover::after { content: '–'; font-size: 8px; color: #8b4513; font-weight: bold; position: absolute; top:50%; left:50%; transform: translate(-50%,-50%); }
-.window-control.maximize:hover::after { content: '+'; font-size: 8px; color: #0a5f15; font-weight: bold; position: absolute; top:50%; left:50%; transform: translate(-50%,-50%); }
-
-/* ====================================
-   7. Window Content & Specific Files (FIXES APPLIED HERE)
-   ==================================== */
-.window-content {
-    /* Base style for content area */
-    padding: 15px;
-    height: calc(100% - 28px); /* Full height minus header height */
-    overflow: auto; /* Allows scrolling if content exceeds window size */
-}
-
-/* FIX 1: Text wrapping for <pre> (e.g., about_me.txt) */
-.window-content pre {
-    white-space: pre-wrap; /* Allows text to wrap */
-    word-wrap: break-word; /* Ensures long words break */
-    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-    font-size: 13px;
-    line-height: 1.4;
-    color: #333;
-    padding: 0;
+  body {
     margin: 0;
+    min-height: 100vh;
+    background-color: rgb(var(--color-paper));
+    color: rgb(var(--color-primary));
+    font-family: var(--font-sans);
+  }
+
+  /* Consistent, visible keyboard focus */
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-primary));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 }
 
-/* FIX 2: File icons and names inside windows (experience.txt, resume.pdf) */
-.file {
-    display: flex;
-    flex-direction: column; /* Stacks icon and name vertically */
-    align-items: center;
-    width: 90px;
-    padding: 8px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.1s ease;
-    text-align: center;
-}
-
-.file:hover {
-    background: #f0f0f0;
-}
-
-.file-icon {
-    width: 32px; /* Smaller icon size for inside a window */
-    height: 32px;
-    margin-bottom: 4px; 
-    filter: none; /* Remove desktop icon shadow */
-}
-
-.file-name {
-    font-size: 12px;
-    color: #333;
-    word-wrap: break-word;
-    max-width: 100%;
-    line-height: 1.2;
-}
-
-/* Social icons within the Socials window */
-.socials-content {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-}
-
-.socials-content a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #333;
-    font-size: 12px;
-}
-
-.social-icon {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 4px;
-}
-
-/* Image Viewer (Resume Window) */
-.image-toolbar {
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    border-bottom: 1px solid #ddd;
-    gap: 10px;
-}
-
-.toolbar-btn {
-    padding: 4px 8px;
-    background: #eee;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background 0.1s;
-}
-
-.toolbar-btn:hover {
-    background: #e0e0e0;
-}
-
-.zoom-controls {
-    margin-left: auto; /* Push zoom controls to the right */
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-}
-
-.image-content {
-    overflow: auto; /* Essential for seeing zoomed-in parts */
-    height: calc(100% - 28px - 32px); /* Calc: 100% - Header - Toolbar */
-    display: flex;
-    justify-content: center; /* Center image horizontally */
-    align-items: flex-start; /* Align image to the top */
-    padding-top: 20px;
-}
-
-.image-content img {
-    /* Default image styles */
-    max-width: 100%;
-    height: auto;
-    transition: transform 0.2s ease;
+/* Respect reduced-motion at the platform level too */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

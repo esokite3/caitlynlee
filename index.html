@@ -4,10 +4,42 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/memoji.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Caitlyn Lee</title>
+    <meta
+      name="description"
+      content="Caitlyn Lee — Computer Science & Business Analytics student at UC San Diego. A sticky-note desk portfolio of experience and projects."
+    />
+    <meta property="og:title" content="Caitlyn Lee — Portfolio" />
+    <meta
+      property="og:description"
+      content="CS & Business Analytics @ UC San Diego. Experience, projects, and a little creative workspace."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Caitlyn Lee — Portfolio</title>
+    <!-- Decode the SPA redirect from 404.html back into a clean route. -->
+    <script>
+      ;(function () {
+        var l = window.location
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&')
+            })
+            .join('?')
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash)
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
