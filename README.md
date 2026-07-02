@@ -1,4 +1,4 @@
-# Caitlyn Lee — Portfolio
+# Caitlyn Lee's Portfolio
 
 A sticky-note desk portfolio: experience and projects presented as interactive
 sticky notes on a paper workspace. Built to feel handcrafted and tactile while
@@ -10,7 +10,7 @@ staying professional.
 
 - **React 19** + **TypeScript** + **Vite**
 - **Tailwind CSS** (design tokens as CSS variables)
-- **Framer Motion** (peel, morph, page transitions)
+- **Framer Motion** (morph, page transitions)
 - **React Router**
 - **Lucide** (monochrome navigation icons)
 
