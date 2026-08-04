@@ -37,7 +37,7 @@ function Section({
   )
 }
 
-/** Clean, editorial case-study layout — deliberately distinct from the sticky-note desk. */
+/** Clean, editorial case-study layout, deliberately distinct from the sticky-note desk. */
 export default function JobTrackerCaseStudy() {
   return (
     <PageTransition>
@@ -69,7 +69,7 @@ export default function JobTrackerCaseStudy() {
             </dl>
           </header>
 
-          {/* 2. Hero image — before/after */}
+          {/* 2. Hero image: before/after */}
           <CaseStudyImageCompare
             beforeSrc={beforeImg}
             afterSrc={afterImg}
@@ -155,14 +155,49 @@ export default function JobTrackerCaseStudy() {
             </ul>
           </Section>
 
-          {/* 9. Reflection */}
+          {/* 9. Next Iteration: A Feedback Loop for AI Parsing */}
+          <Section label="Next Iteration" heading="A Feedback Loop for AI Parsing">
+            <div className="flex flex-col gap-8">
+              <p>{cs.nextIteration.context}</p>
+
+              <div className="flex flex-col gap-3">
+                <p className="font-sans text-xs font-bold uppercase tracking-wide text-primary">
+                  Design Questions
+                </p>
+                <ul className="flex flex-col gap-2">
+                  {cs.nextIteration.designQuestions.map((question, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span
+                        aria-hidden
+                        className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-ink/40"
+                      />
+                      <span>{question}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <p className="font-sans text-xs font-bold uppercase tracking-wide text-primary">
+                  Proposed Direction
+                </p>
+                <p>{cs.nextIteration.proposedDirection}</p>
+              </div>
+
+              <p className="w-fit rounded-md border border-dashed border-ink/25 bg-ink/[0.03] px-4 py-3 font-sans text-sm italic text-ink/70">
+                {cs.nextIteration.closingLine}
+              </p>
+            </div>
+          </Section>
+
+          {/* 10. Reflection */}
           <section className="border-t border-ink/10 pt-10">
             <blockquote className="max-w-[62ch] border-l-4 border-sticky-edge pl-6 font-sans text-lg italic leading-relaxed text-ink/90 sm:text-xl">
               {cs.reflection}
             </blockquote>
           </section>
 
-          {/* 10. Link back */}
+          {/* 11. Link back */}
           <footer className="border-t border-ink/10 pt-8">
             <Link
               to="/work"

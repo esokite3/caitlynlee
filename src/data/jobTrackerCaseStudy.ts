@@ -42,6 +42,22 @@ export const jobTrackerCaseStudy = {
     'Addressed both an emotional read (cold vs. personal) and a genuine accessibility gap, informed directly by user playtesting',
   ],
 
+  nextIteration: {
+    context:
+      "The MVP auto-parses job postings (title, company, location) after a scheduled LLM job reads a user's emails to identify which ones relate to a job application. Parsing isn't always perfect, and right now there's no way for users to correct it, or for the system to improve from that feedback.",
+    designQuestions: [
+      'How should low-confidence extractions be surfaced to the user?',
+      'What should the correction interaction feel like: fast and inline, not a form?',
+      'How do you collect feedback without fatiguing the user?',
+      "What's the incentive for a user to bother correcting it?",
+      'Where is the line between AI auto-filling silently vs. requiring confirmation?',
+    ],
+    proposedDirection:
+      'Low-confidence fields would be subtly flagged. Tapping one would let a user edit inline, with the correction feeding directly back into future parsing for their own postings.',
+    closingLine:
+      "This is a concept in progress. It hasn't been built or tested yet, but it's the direction I'd take the feature next.",
+  },
+
   reflection:
-    "This project taught me that a design can succeed in a static mockup and still fail once it's live and something people actually use daily. Catching that gap early, through real playtesting rather than assumption, made the fix sharper and more defensible.",
+    "This project taught me that a design can succeed in a static mockup and still fail once it's live and something people actually use daily. Catching that gap early, through real playtesting rather than assumption, made the fix sharper and more defensible. It also reminded me that good product thinking doesn't stop at what shipped: noticing the next rough edge, like imperfect parsing, and reasoning through how to fix it is part of the same job.",
 } as const
