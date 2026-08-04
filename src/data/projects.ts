@@ -6,6 +6,19 @@ import type { WorkItem } from './types'
  */
 export const projects: WorkItem[] = [
   {
+    id: 'job-tracker-sdsc',
+    kind: 'project',
+    title: 'Job Tracker Redesign',
+    company: 'San Diego Supercomputer Center',
+    dates: '1 Sprint (2 Weeks)',
+    description: [
+      'Redesigned the dashboard color system after user playtesting revealed a gap between a polished static mockup and how the interface actually felt once built and live.',
+      'Replaced a uniform gradient with a higher-contrast, purposefully varied palette to meet ARIA accessibility guidelines. Merged into the main development branch.',
+    ],
+    caseStudyPath: '/case-studies/job-tracker',
+    rotation: -1.5,
+  },
+  {
     id: 'educational-game',
     kind: 'project',
     title: 'Educational Game Project',

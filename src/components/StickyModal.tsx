@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { X } from 'lucide-react'
+import { ArrowUpRight, X } from 'lucide-react'
 import type { WorkItem } from '../data/types'
 import { EASE, durations } from '../lib/motion'
 import { useScrollLock } from '../hooks/useScrollLock'
@@ -81,6 +82,19 @@ export default function StickyModal({
               <span>{point}</span>
             </li>
           ))}
+
+          {item.caseStudyPath && (
+            <li className="flex">
+              <Link
+                to={item.caseStudyPath}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 font-sans text-sm font-bold text-primary underline underline-offset-4 transition-opacity duration-200 hover:opacity-70"
+              >
+                Read the full case study
+                <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden />
+              </Link>
+            </li>
+          )}
         </motion.ul>
       </motion.div>
     </motion.div>

@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Work from './pages/Work'
 import About from './pages/About'
+import JobTrackerCaseStudy from './pages/JobTrackerCaseStudy'
 
 /** Resets scroll position on route change. */
 function useScrollToTop(pathname: string) {
@@ -34,6 +35,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/work" element={<Work />} />
             <Route path="/about" element={<About />} />
+            <Route path="/case-studies/job-tracker" element={<JobTrackerCaseStudy />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </AnimatePresence>

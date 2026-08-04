@@ -28,6 +28,8 @@ export interface WorkItem {
   description: string[]
   /** Optional external link (projects). */
   link?: string
+  /** Optional in-site route to a full case-study page, linked from the modal. */
+  caseStudyPath?: string
   /** Resting rotation in degrees for the natural desk look. */
   rotation: number
 }
