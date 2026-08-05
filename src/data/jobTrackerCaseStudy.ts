@@ -20,7 +20,7 @@ export const jobTrackerCaseStudy = {
     "Make the interface feel warm and personal, since it's a tool people return to daily to manage their job search, while improving accessibility.",
 
   problem:
-    'The original dashboard used a consistent gradient treatment across every element. It looked clean in Figma, but once implemented and running, it felt cold and impersonal like enterprise software than something built for a daily, personal task like job hunting.',
+    'The original dashboard used a consistent gradient treatment across every element. It looked clean in Figma, but once implemented and running, it felt cold and impersonal, closer to enterprise software than something built for a daily, personal task like job hunting.',
 
   researchInsights: [
     'Once built and running, the gradient read as sterile rather than warm or approachable, highlighting a gap between how it looked in a static mockup versus a live, interactive product.',
